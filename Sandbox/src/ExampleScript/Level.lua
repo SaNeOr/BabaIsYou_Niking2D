@@ -59,6 +59,7 @@ end
 
 function Level:Init()
     A = GameObject:new()
+
 	A.sprite = sprites.baba
 	A.InputComponent = PlayerInput:new{obj = A}
     table.insert(Objects, A)
@@ -69,20 +70,22 @@ function Level:Init()
 	B.x = 3
 	B.y = 3
 	-- B.InputComponent = Input:new()
-	B.adj = Adjective.STOP
+	B.adj = Adjective.NONE
     table.insert(Objects, B)
-    table.insert(Walls,  A)
+    table.insert(Walls,  B)
     
 
 	C = GameObject:new()
 	C.sprite = sprites.rock
 	C.x = -2
 	C.y = -2
-    C.InputComponent = Input:new()
+    -- C.InputComponent = Input:new()
     table.insert(Objects, C)
 	table.insert(Rocks, C)
     C.adj = Adjective.NONE
     
+
+
 
 
 
@@ -92,8 +95,8 @@ function Level:Init()
     RockFont.x = -7
     RockFont.y = 0
     -- Is1.InputComponent = Input:new()
-	table.insert(Objects, RockFont)
     RockFont.adj = Adjective.PUSH
+	table.insert(Objects, RockFont)
 
     Is1 = LinkVerb:new()
     Is1.sprite = sprites.isFont
@@ -108,8 +111,8 @@ function Level:Init()
     PushFont.x = -5
     PushFont.y = 0
     -- Is1.InputComponent = Input:new()
-	table.insert(Objects, PushFont)
     PushFont.adj = Adjective.PUSH
+	table.insert(Objects, PushFont)
 
 
     BabaFont = GameObject:new()
@@ -118,8 +121,8 @@ function Level:Init()
     BabaFont.x = -7
     BabaFont.y = 3
     -- Is1.InputComponent = Input:new()
-	table.insert(Objects, BabaFont)
     BabaFont.adj = Adjective.PUSH
+	table.insert(Objects, BabaFont)
 
     Is2 = LinkVerb:new()
     Is2.sprite = sprites.isFont
@@ -135,85 +138,44 @@ function Level:Init()
     YouFont.x = -5
     YouFont.y = 3
     -- Is1.InputComponent = Input:new()
-	table.insert(Objects, YouFont)
     YouFont.adj = Adjective.PUSH
+	table.insert(Objects, YouFont)
 
 
 
-    -- for k,v in pairs(TagOfIs) do
-    --     local noun = GetGameObject(v.x - 1, v.y)
-    --     local adjective = GetGameObject(v.x + 1, v.y)
-    --     v.noun = noun
-    --     v.adjective = adjective
+    WallFont = GameObject:new()
+    WallFont.tag = "Wall"
+    WallFont.sprite = sprites.wallFont
+    WallFont.x = -7
+    WallFont.y = 5
+    WallFont.adj = Adjective.PUSH
+	table.insert(Objects, WallFont)
 
-    --     if v.adjective.Tag == "Push" and v.noun.Tag == "Rock" then
-    --         -- noun.tag == "Rock"
-    --         for i,j in pairs(Rocks) do
-    --             j.adj = Adjective.PUSH
-    --         end
-    --     end
+    Is3 = LinkVerb:new()
+    Is3.sprite = sprites.isFont
+    Is3.x = -6
+    Is3.y = 5
+	table.insert(Objects, Is3)
+	table.insert(TagOfIs, Is3)
 
-    -- end
+    StopFont = GameObject:new()
+    StopFont.tag = "STOP"
+    StopFont.sprite = sprites.stopFont
+    StopFont.x = -5
+    StopFont.y = 5
+    StopFont.adj = Adjective.PUSH
+	table.insert(Objects, StopFont)
 
 
+    for _, o in pairs(TagOfIs) do
+        o:Update()
+    end
 end
 
 
 function Level:Update()
     for _, o in pairs(TagOfIs) do
         o:Update()
+        o:Update()
     end
-
-    -- for _, o in pairs(TagOfIs) do
-    --     o:Update()
-    -- end
-    -- for k,v in pairs(TagOfIs) do
-    --     -- if v.noun == nil or v.adjective == nil then
-    --     --     break
-    --     -- end
-
-    --     local noun = GetGameObject(v.x - 1, v.y)
-    --     local adjective = GetGameObject(v.x + 1, v.y)
-
-    --     if v.noun == noun and v.adjective == adjective then
-    --         break
-    --     end
-
-    --     if noun == nil or adjective == nil then
-    --         if v.noun == nil or v.adjective == nil then
-    --             break
-    --         end
-    --         if v.noun.Tag == "Rock" then
-    --             for i,j in pairs(Rocks) do
-    --                 j.adj = Adjective.NONE
-    --                 j.InputComponent = Input:new()
-    --                 print("!!!!!!")
-    --             end
-    --         end
-    --         v.noun = noun
-    --         v.adjective = adjective
-    --         break
-    --     end
-
-    --     v.noun = noun
-    --     v.adjective = adjective
-
-    --     if v.adjective.Tag == "Push" and v.noun.Tag == "Rock" then
-    --         -- noun.tag == "Rock"
-    --         for i,j in pairs(Rocks) do
-    --             j.adj = Adjective.PUSH
-    --         end
-    --     end
-
-    --     if v.adjective.Tag == "You" and v.noun.Tag == "Rock" then
-    --         -- noun.tag == "Rock"
-    --         for i,j in pairs(Rocks) do
-    --             -- print(j.x)/
-    --             j.adj = Adjective.YOU
-    --             j.InputComponent = PlayerInput:new{obj = j}
-    --         end
-    --     end
-
-        
-    -- end
 end

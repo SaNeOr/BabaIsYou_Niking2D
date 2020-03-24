@@ -1,4 +1,16 @@
+AllObjectsTrace = {}
+
+
 Input = {}
+function Input:AddTrace()
+    table.insert( AllObjectsTrace,  {})
+    for _,v in pairs(Objects) do
+        local pos = {x = v.x , y = v.y}
+        table.insert( AllObjectsTrace[#AllObjectsTrace], pos)
+    end
+    print("AddTace: ", #AllObjectsTrace)
+
+end
 
 function Input:Update(dt)
 end
@@ -8,6 +20,55 @@ function Input:new(o)
     self.__index = self
     setmetatable(o, self)
     return o
+end
+
+
+GlobalInput = Input:new()
+GlobalInput.time = 0.0
+GlobalInput.inputInterval =  0.3
+GlobalInput.isPressed = true
+GlobalInput.firstPressed = true
+
+
+function GlobalInput:Init()
+    Input:AddTrace()
+end
+
+function GlobalInput:Update(dt)
+    if self.isPressed == true then
+        self.time  = self.time + dt
+        if(self.time > self.inputInterval) then
+            self.time = 0.0
+            self.isPressed = false
+        end
+    end
+
+    if IsKeyPressed("space") and self.isPressed == false then
+        self.isPressed = true
+        if #AllObjectsTrace >= 2 and GlobalInput.firstPressed then
+            table.remove(AllObjectsTrace)
+            GlobalInput.firstPressed = false
+        end
+        GlobalInput:Undo()
+    end
+end
+
+function GlobalInput:Undo()
+    if #AllObjectsTrace <= 0 then
+        return
+    end
+    local trace = table.remove(AllObjectsTrace)
+    print("RemoveTace: ", #AllObjectsTrace)
+
+        for _,o in pairs(trace) do
+            -- print
+        end
+    for i, o in pairs(Objects) do
+        o.x = trace[i].x
+        o.y = trace[i].y
+        -- print(trace[i].x, trace[i].y)
+    end
+
 end
 
 PlayerInput = Input:new()
@@ -44,7 +105,7 @@ function PlayerInput:Move(keycode, offsetX , offsetY)
                 -- PlayerInput:Push(self.obj, offsetX, offsetY)
                 for i=1,#Objects do
                     obj = GetGameObject(self.obj.x + offsetX * i, self.obj.y + offsetY * i)
-                    if obj.tag == "None" then
+                    if obj.tag == "None" or obj.adj == Adjective.NONE then
                         -- print(i)
                         for k = i-1, 1,-1 do
                             obj = GetGameObject(self.obj.x + offsetX * k, self.obj.y + offsetY * k)
@@ -59,27 +120,14 @@ function PlayerInput:Move(keycode, offsetX , offsetY)
                 end
             end
         end
-
-        -- for k,v in pairs(Objects) do
-        --     if v.adj == Adjective.STOP then
-        --         if self.obj.x + offsetX == v.x and  self.obj.y + offsetY == v.y then
-        --             return
-        --         end
-        --     end
-
-        --     if v.adj == Adjective.PUSH then
-        --         -- if self.obj.x + offsetX == v.x and self.obj.y + offsetY == v.y then
-        --         --     v.x = v.x + offsetX
-        --         --     v.y = v.y + offsetY
-        --         -- end
-        --         PlayerInput:Push(self.obj, offsetX, offsetY)
-        --     end
-
-        -- end
         self.obj.x = self.obj.x + offsetX
         self.obj.y = self.obj.y + offsetY
+        GlobalInput.firstPressed = true
+        Input:AddTrace()
     end
 end
+
+
 
 
 function PlayerInput:Push(obj, dx, dy)

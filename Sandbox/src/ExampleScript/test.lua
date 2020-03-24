@@ -106,12 +106,13 @@ end
 
 
 A = {}
-A[1] = 5
-A[2] = 10
-A.t = 22
+
+-- A.t = 22
 
 B = {}
-B.x = A
+B.x = 10
+B.y = 20
+C = {x = 55, 66}
 
 
 
@@ -131,6 +132,41 @@ B.x = A
 -- print(B.t[2])
 
 
+table.insert( A, {})
+-- x = A[#A]
+-- x = 50
+-- A[#A] = 50
+-- print(x)
 for _,v in pairs(A) do
-    print(_)
+    local t = B
+    table.insert(A[#A], t)
+    table.insert(A[#A], C)
+    -- print(_, v.x)
 end
+print(#A)
+t = table.remove(A)
+print(#A)
+-- print(t[1].x, t[2].x)
+-- for _,v in pairs(t) do
+--     -- print(_, v.x)
+--     print(t[2].x)
+-- end
+-- print(t[1].x, t[1].y)
+
+-- for _,v in pairs(table.remove(A)  ) do
+--     print(_, v.x)
+-- end
+-- for _,v in pairs(A) do
+--     repeat
+--         if v == 10 then
+--             break
+--         end
+--         print(v)
+--     until true
+-- end
+
+-- i = 0
+-- repeat
+--     print(i)
+--     i = i + 1
+-- until i >= 5

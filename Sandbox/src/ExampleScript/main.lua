@@ -3,6 +3,7 @@ function Init()
 	sprites.baba	= LoadTexture("assets/textures/baba_0_1.png")
 	sprites.wall	= LoadTexture("assets/textures/wall_0_1.png")
 	sprites.rock	= LoadTexture("assets/textures/rock_0_1.png")
+	sprites.flag	= LoadTexture("assets/textures/flag_0_1.png")
 
 	sprites.rockFont= LoadTexture("assets/textures/text_rock_0_1.png")
 	sprites.babaFont= LoadTexture("assets/textures/text_baba_0_1.png")
@@ -11,7 +12,9 @@ function Init()
 	sprites.isFont	= LoadTexture("assets/textures/text_is_0_1.png")
 	
 	sprites.pushFont= LoadTexture("assets/textures/text_push_0_1.png")
-	sprites.youFont= LoadTexture("assets/textures/text_you_0_1.png")
+	sprites.youFont	= LoadTexture("assets/textures/text_you_0_1.png")
+	sprites.stopFont= LoadTexture("assets/textures/text_stop_0_1.png")
+	sprites.winFont	= LoadTexture("assets/textures/text_win_0_1.png")
 
 	-- sprites.player = LoadTexture("assets/textures/Ship.png")
 	-- sprites.triangle = LoadTexture("assets/textures/Triangle.png")
@@ -22,7 +25,7 @@ function Init()
 	require("src/ExampleScript/GameObject")
 
 	Level:Init()
-
+	GlobalInput:Init()
 	GameState = {State = -1, Play = 0, MainMenu =1, GameOver = 2}
 	GameState.State = GameState.MainMenu
 
@@ -37,8 +40,8 @@ function Update(dt)
 
 	-- Objects.B:Update(dt)
 	Level:Update()
-	Level:Update()
-
+	-- Level:Update()
+	GlobalInput:Update(dt)
 	for k,v in pairs(Objects) do
 		v:Update(dt)
 	end

@@ -45,22 +45,27 @@ LinkVerb.down = nil
 
 LinkVerb.leftNounObjectTag = nil
 LinkVerb.rightAdjectiveTag = nil
-
+LinkVerb.updateTimes = 0
 
 function LinkVerb:Update()
     self.left = GetGameObject(self.x -1, self.y)
     self.right = GetGameObject(self.x + 1, self.y)
     
-    if self.left.tag == self.leftNounObjectTag and self.right.tag == self.rightAdjectiveTag then
+    if self.left.tag == self.leftNounObjectTag and self.right.tag == self.rightAdjectiveTag and self.updateTimes >= 2 then
         return
     end
 
-    
+    if self.left.tag ~= self.leftNounObjectTag and self.right.tag ~= self.rightAdjectiveTag then
+        self.updateTimes = 0
+    end
+
+    -- print(self.updateTimes)
+    self.updateTimes = self.updateTimes + 1
 
 
     if self.left.tag == "None" or self.left.tag == "" or self.left.tag ~= self.leftNounObjectTag then
         local t = GetGameObjectsTableFromTag(self.leftNounObjectTag)
-        print(#t)
+        -- print(#t)
         for _,o in pairs(t) do
             o.adj = Adjective.NONE
             
