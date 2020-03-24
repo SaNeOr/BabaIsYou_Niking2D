@@ -17,7 +17,7 @@ struct ParticleProps
 		Position = { 0.0f, 0.0f };
 		Velocity = { -2.0f, 0.0f }, VelocityVariation = { 3.0f, 1.0f };
 		SizeBegin = 0.5f, SizeEnd = 0.0f, SizeVariation = 0.3f;
-		ColorBegin = { 254 / 255.0f, 109 / 255.0f, 41 / 255.0f, 1.0f };
+		ColorBegin = { 254 / 255.0f, 254 / 255.0f, 254 / 255.0f, 1.0f };
 		ColorEnd = { 254 / 255.0f, 212 / 255.0f, 123 / 255.0f , 1.0f };
 		LifeTime = 1.0f;
 	}

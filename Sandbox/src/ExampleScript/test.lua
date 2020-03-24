@@ -170,3 +170,5 @@ print(#A)
 --     print(i)
 --     i = i + 1
 -- until i >= 5
+
+print(os.time())

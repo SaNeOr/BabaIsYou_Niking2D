@@ -8,7 +8,7 @@ function Input:AddTrace()
         local pos = {x = v.x , y = v.y}
         table.insert( AllObjectsTrace[#AllObjectsTrace], pos)
     end
-    print("AddTace: ", #AllObjectsTrace)
+    -- print("AddTace: ", #AllObjectsTrace)
 
 end
 
@@ -28,10 +28,21 @@ GlobalInput.time = 0.0
 GlobalInput.inputInterval =  0.3
 GlobalInput.isPressed = true
 GlobalInput.firstPressed = true
-
+GlobalInput.step = 0
 
 function GlobalInput:Init()
     Input:AddTrace()
+end
+
+function GlobalInput:Reset()
+    local trace = AllObjectsTrace[1]
+    for i, o in pairs(Objects) do
+        o.x = trace[i].x
+        o.y = trace[i].y
+    end
+
+    GlobalInput.step = 0
+    AllObjectsTrace = {}
 end
 
 function GlobalInput:Update(dt)
@@ -53,12 +64,16 @@ function GlobalInput:Update(dt)
     end
 end
 
+function GlobalInput:GetStep()
+    return GlobalInput.step
+end
+
 function GlobalInput:Undo()
     if #AllObjectsTrace <= 0 then
         return
     end
     local trace = table.remove(AllObjectsTrace)
-    print("RemoveTace: ", #AllObjectsTrace)
+    -- print("RemoveTace: ", #AllObjectsTrace)
 
         for _,o in pairs(trace) do
             -- print
@@ -69,6 +84,8 @@ function GlobalInput:Undo()
         -- print(trace[i].x, trace[i].y)
     end
 
+    GlobalInput.step = GlobalInput.step - 1
+
 end
 
 PlayerInput = Input:new()
@@ -77,6 +94,8 @@ PlayerInput.time = 0.0
 PlayerInput.inputInterval =  0.3
 PlayerInput.isPressed = true
 PlayerInput.obj = nil
+PlayerInput.particleSystem = ParticleSystem.new()
+PlayerInput.engineParticle = ParticleProps.new()
 
 function PlayerInput:Update(dt)
     if self.isPressed == true then
@@ -91,6 +110,12 @@ function PlayerInput:Update(dt)
     self:Move("S",  0, -1)
     self:Move("A", -1,  0)
     self:Move("D",  1,  0)
+
+    self.particleSystem:OnUpdate(dt)
+end
+
+function PlayerInput:ParticleDraw()
+    self.particleSystem:OnRender()
 end
 
 function PlayerInput:Move(keycode, offsetX , offsetY)
@@ -98,6 +123,10 @@ function PlayerInput:Move(keycode, offsetX , offsetY)
         self.isPressed = true
         local obj = GetGameObject(self.obj.x + offsetX, self.obj.y + offsetY)
         if obj ~= nil then
+            if obj.adj == Adjective.WIN then
+                Level:GameOver()
+            end
+
             if obj.adj == Adjective.STOP then
                 return
             end
@@ -122,8 +151,22 @@ function PlayerInput:Move(keycode, offsetX , offsetY)
         end
         self.obj.x = self.obj.x + offsetX
         self.obj.y = self.obj.y + offsetY
+
+
+        ----------------- Particle Setting-----------------------------
+        local emissionPoint = {x = -offsetX * 0.3, y = -offsetY * 0.3}
+        local rotation = math.rad(0)
+        self.engineParticle:Rotated(rotation,emissionPoint.x, emissionPoint.y )
+        self.engineParticle:SetPosition(self.obj.x + self.engineParticle.rotatedX, self.obj.y + self.engineParticle.rotatedY)
+        self.engineParticle:SetVelocity(0.0, 0.0)
+        self.particleSystem:Emit(self.engineParticle)
+        ----------------------------------------------------------------
+        ----------------------------------------------------------------
+
+
         GlobalInput.firstPressed = true
         Input:AddTrace()
+        GlobalInput.step = GlobalInput.step + 1
     end
 end
 

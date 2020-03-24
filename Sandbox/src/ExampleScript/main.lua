@@ -8,6 +8,7 @@ function Init()
 	sprites.rockFont= LoadTexture("assets/textures/text_rock_0_1.png")
 	sprites.babaFont= LoadTexture("assets/textures/text_baba_0_1.png")
 	sprites.wallFont= LoadTexture("assets/textures/text_wall_0_1.png")
+	sprites.flagFont= LoadTexture("assets/textures/text_flag_0_1.png")
 	
 	sprites.isFont	= LoadTexture("assets/textures/text_is_0_1.png")
 	
@@ -30,34 +31,36 @@ function Init()
 	GameState.State = GameState.MainMenu
 
 	-- SetCameraPosition(player.position.x, player.position.y )
-
 end
+
+
+
+FlashTime = 0.0
 
 function Update(dt)
-	
-	-- A:Update(dt)
-	-- Objects.A:Update(dt)
-
-	-- Objects.B:Update(dt)
-	Level:Update()
-	-- Level:Update()
-	GlobalInput:Update(dt)
-	for k,v in pairs(Objects) do
-		v:Update(dt)
-	end
-	-- Objects[1].Update(dt)
-
-	-- A.InputComponent:Update(dt, A)
 
 	if GameState.State == GameState.Play then
-		-- player:Update(dt)
-		-- SetCameraPosition(player.position.x, player.position.y )
-		-- level:Update()
+		Level:Update()
+		GlobalInput:Update(dt)
+		for k,v in pairs(Objects) do
+			v:Update(dt)
+		end
 	end
+
+	math.randomseed(os.time())
+	FlashTime = FlashTime + dt
+	if FlashTime > (math.random(15, 20) / 10.0) then
+		FlashTime = 0.0
+	end
+
 end
 
+
+
 function Draw()
-	-- DrawQuad(0, 0,   5,5 , 1,0,0,1)
+	if GameState.State ~= GameState.Play then
+		DrawQuad(0, 0,   50,50 , 0,0,0,1)
+	end
 	-- DrawQuad(-5.0, 5.0,10,5 , 0,1,0,1)
 	-- DrawQuadZ(0.0, 0.0, -0.5, 10, 16 , 0,0,1,1)
 	-- level.Draw()
@@ -66,31 +69,43 @@ function Draw()
 	-- Objects.B:Draw()
 	for k,v in pairs(Objects) do
 		v:Draw()
+		if v.adj == Adjective.YOU then
+			v.InputComponent:ParticleDraw()
+		end
 	end
+
 end
+
+
 
 
 function DrawUI()
 	if GameState.State == GameState.Play then
-		-- context = "Score: " .. math.floor( player:GetScore() )
-		-- DrawFont(context, 0.0, 0.0, 120.0)
+
+		context = "Step: " .. math.floor( GlobalInput:GetStep() )
+		DrawFont(context, -12.0, -12.0, 32.0)
 	elseif GameState.State == GameState.MainMenu then
 		local offset = {x = Width * 0.5 - 400, y = 50}
-		DrawFont("Click to Play!", offset.x, offset.y, 120.0)
-	elseif GameState.State == GameState.GameOver then
-		-- local offset = {x = Width * 0.5 - 400, y = 50}
-		-- DrawFont("Click to Play!", offset.x, offset.y, 120.0)
-		-- offset.x = offset.x + 200.0
-		-- offset.y = offset.y + 100.0
-		-- DrawFont(context, offset.x, offset.y, 48.0)
 
+		DrawFont("Baba Is You!", offset.x, offset.y, 120.0)
+		if FlashTime >= (math.random(0, 10) / 10.0)  then
+			DrawFont("- Clik to start -", offset.x + 150, offset.y + 150, 45.0)
+		end
+
+	elseif GameState.State == GameState.GameOver then
+		local offset = {x = Width * 0.5 - 400, y = 50}
+		DrawFont("Game Over", offset.x, offset.y, 120.0)
+		offset.x = offset.x + 200.0
+		offset.y = offset.y + 150.0
+		DrawFont(context, offset.x, offset.y, 48.0)
 	end
+
 end
 
 
 function OnMouseButtonPressed()
 	if GameState.State == GameState.GameOver then
-		player:Reset()
+		GlobalInput:Reset()
 	end
 
 	GameState.State = GameState.Play

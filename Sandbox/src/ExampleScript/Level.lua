@@ -15,6 +15,7 @@ TagOfIs = {}
 Rocks = {}
 Walls = {}
 Babas = {}
+Flags = {}
 
 
 
@@ -39,6 +40,9 @@ function GetGameObjectsTableFromTag(tag)
     if tag == "Wall" then
         return Walls
     end
+    if tag == "Flag" then
+        return Flags
+    end
     return {}
 end
 
@@ -51,6 +55,9 @@ function GetAdjectiveFromTag(tag)
     end
     if tag == "STOP" then
         return Adjective.STOP
+    end
+    if tag == "WIN" then
+        return Adjective.WIN
     end
 
     return Adjective.NONE
@@ -69,7 +76,6 @@ function Level:Init()
 	B.sprite = sprites.wall
 	B.x = 3
 	B.y = 3
-	-- B.InputComponent = Input:new()
 	B.adj = Adjective.NONE
     table.insert(Objects, B)
     table.insert(Walls,  B)
@@ -79,10 +85,18 @@ function Level:Init()
 	C.sprite = sprites.rock
 	C.x = -2
 	C.y = -2
-    -- C.InputComponent = Input:new()
-    table.insert(Objects, C)
-	table.insert(Rocks, C)
     C.adj = Adjective.NONE
+    table.insert(Objects, C)
+    table.insert(Rocks, C)
+    
+
+	D = GameObject:new()
+	D.sprite = sprites.flag
+	D.x = 2
+	D.y = -1
+    D.adj = Adjective.NONE
+    table.insert(Objects, D)
+	table.insert(Flags, D)
     
 
 
@@ -164,7 +178,31 @@ function Level:Init()
     StopFont.x = -5
     StopFont.y = 5
     StopFont.adj = Adjective.PUSH
-	table.insert(Objects, StopFont)
+    table.insert(Objects, StopFont)
+    
+
+    FlagFont = GameObject:new()
+    FlagFont.tag = "Flag"
+    FlagFont.sprite = sprites.flagFont
+    FlagFont.x = 3
+    FlagFont.y = 5
+    FlagFont.adj = Adjective.PUSH
+	table.insert(Objects, FlagFont)
+
+    Is4 = LinkVerb:new()
+    Is4.sprite = sprites.isFont
+    Is4.x = 4
+    Is4.y = 5
+	table.insert(Objects, Is4)
+	table.insert(TagOfIs, Is4)
+
+    WinFont = GameObject:new()
+    WinFont.tag = "WIN"
+    WinFont.sprite = sprites.winFont
+    WinFont.x = 5
+    WinFont.y = 5
+    WinFont.adj = Adjective.PUSH
+	table.insert(Objects, WinFont)
 
 
     for _, o in pairs(TagOfIs) do
@@ -178,4 +216,10 @@ function Level:Update()
         o:Update()
         o:Update()
     end
+end
+
+
+function Level:GameOver()
+    -- print("GAME OVER!")
+    GameState.State = GameState.GameOver
 end

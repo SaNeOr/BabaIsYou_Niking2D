@@ -9,7 +9,7 @@ namespace Niking2D {
 
 	void Script::Init() {
 		s_LuaState = std::make_shared<sol::state>();
-		s_LuaState->open_libraries(sol::lib::base, sol::lib::math, sol::lib::package, sol::lib::table);
+		s_LuaState->open_libraries(sol::lib::base, sol::lib::math, sol::lib::package, sol::lib::table, sol::lib::os);
 		
 		
 		BindInitFunction();

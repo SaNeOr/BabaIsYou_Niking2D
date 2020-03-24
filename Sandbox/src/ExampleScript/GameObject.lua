@@ -21,11 +21,6 @@ function GameObject:Draw()
     DrawQuadRTex(self.sprite, self.x, self.y, 1.0, 1.0, math.rad(0.0))
 end
 
--- function GameObject:GetGameObject(posX, posY)
-    
---     self.y = self.y + offsetY
--- end
-
 
 function GameObject:new(o)
     o = o or {}
@@ -73,7 +68,7 @@ function LinkVerb:Update()
         end
     end
     self.leftNounObjectTag = self.left.tag
-    print(self.leftNounObjectTag)
+    -- print(self.leftNounObjectTag)
     
     
     local t = GetGameObjectsTableFromTag(self.leftNounObjectTag)
